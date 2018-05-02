@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:task="http://www.springframework.org/schema/task"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xmlns:jee="http://www.springframework.org/schema/jee"
+        xmlns:cache="http://www.springframework.org/schema/cache"
+        xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <import resource="classpath:redis/redis-config.xml"></import>
+    <!--配置注解驱动器-->
+    <mvc:annotation-driven>
+        <!-- 返回json 方法一 需要导入 fastjson.jar包 -->
+        <mvc:message-converters register-defaults="false">
+            <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+            <bean id="fastJsonHttpMessageConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <!-- 这里顺序不能反，一定先写text/html,不然ie下出现下载提示 -->
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+
+    <!--过滤对静态文件的拦截，但必须有<mvc:annotation-driven />做前置才能这样做注解-->
+    <mvc:default-servlet-handler />
+
+    <!-- 自动扫描注解的bean -->
+    <context:component-scan base-package="com.eemp" />
+
+    <!-- 任务调度器 -->
+    <task:scheduler id="scheduler"  pool-size="10" />
+
+    <!-- 任务执行器 -->
+    <task:executor id="executor" pool-size="10" />
+
+    <!--开启注解调度支持 @Async @Scheduled -->
+    <task:annotation-driven executor="executor" scheduler="scheduler" proxy-target-class="true" />
+
+
+    <!-- 对模型视图添加前后缀 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/view/" p:suffix=".jsp"/>
+
+
+
+    <!--配置文件必须放在底部-->
+    <!-- 本地环境配置文件 -->
+    <beans profile="local">
+        <context:property-placeholder location="classpath:/prop/config.local.prop"/>
+        <util:properties id="properties" location="classpath:/prop/config.local.prop"/>
+
+    </beans>
+
+
+
+
+</beans>
