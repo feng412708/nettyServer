@@ -50,8 +50,7 @@ import java.io.File;
 public final class WebSocketServer {
 
 	public static final boolean SSL = false;
-    public static int PORT = Integer.parseInt(System.getProperty("port", SSL? "18443" : "18080"));
-    
+    public static int PORT ;
     public static EventLoopGroup bossGroup = null;
     public static EventLoopGroup workerGroup = null;
 
@@ -59,7 +58,7 @@ public final class WebSocketServer {
     public static void startServer() throws Exception {
 		String ssl_port = "8443";
 		String port = "8580";
-		PORT = Integer.parseInt(System.getProperty("port", SSL? ssl_port : port));
+		PORT = Integer.parseInt( SSL? ssl_port : port );
     	
         // Configure SSL.
         final SslContext sslCtx;
@@ -94,8 +93,8 @@ public final class WebSocketServer {
             b.option(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 128 * 1024);
             b.option(ChannelOption.SO_BACKLOG, 128) //设置TCP缓冲区
                     .option(ChannelOption.SO_SNDBUF, 32 * 1024) //设置发送数据缓冲大小
-                    .option(ChannelOption.SO_RCVBUF, 32 * 1024); //设置接受数据缓冲大小
-                   // .childOption(ChannelOption.SO_KEEPALIVE, true); //保持连接
+                    .option(ChannelOption.SO_RCVBUF, 32 * 1024)  //设置接受数据缓冲大小
+                    .childOption(ChannelOption.SO_KEEPALIVE, true); //保持连接
             /**
              * 对于ChannelOption.SO_BACKLOG的解释：
              * 服务器端TCP内核维护有两个队列，我们称之为A、B队列。客户端向服务器端connect时，会发送带有SYN标志的包（第一次握手），服务器端

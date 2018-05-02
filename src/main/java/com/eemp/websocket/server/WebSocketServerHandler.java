@@ -184,8 +184,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass()
                     .getName()));
         }
-        RedisData redisData = new RedisData();
-        redisData.wirteData();
+
         //6、执行业务处理
         ChannelBussinessHandler.execute(cl,requestText);
     }

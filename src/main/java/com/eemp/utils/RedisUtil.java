@@ -41,7 +41,7 @@ public class RedisUtil {
      *
      * @param key   键
      * @param value 值
-     * @param time  失效时间
+     * @param time  失效时间(秒)
      */
     public boolean setStringValue(String key, String value, long time) {
         try {

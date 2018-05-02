@@ -43,8 +43,8 @@ public class Listener implements ServletContextListener{
         }catch (Exception e){
             e.printStackTrace();
         }*/
-        //启动推送数据服务
-        TaskFactory.work(new PushDataWorker("PushDataWorker","PushDataWorker"),2000);
+        //启动推送数据服务 注释掉任务推送，采用spring 任务器推送 push snapshotTask
+        //TaskFactory.work(new PushDataWorker("PushDataWorker","PushDataWorker"),2000);
 
     };
 }
